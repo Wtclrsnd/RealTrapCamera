@@ -7,20 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7213C0FC28EC5FD7003C40AC /* LastPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */; };
 		72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F728C7C028005B2F32 /* AppDelegate.swift */; };
 		72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */; };
-		72CAF2FC28C7C028005B2F32 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2FB28C7C028005B2F32 /* ViewController.swift */; };
-		72CAF2FF28C7C028005B2F32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72CAF2FD28C7C028005B2F32 /* Main.storyboard */; };
+		72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2FB28C7C028005B2F32 /* CamViewController.swift */; };
 		72CAF30128C7C02F005B2F32 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 72CAF30028C7C02F005B2F32 /* Assets.xcassets */; };
 		72CAF30428C7C02F005B2F32 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 72CAF30228C7C02F005B2F32 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastPhotoView.swift; sourceTree = "<group>"; };
 		72CAF2F428C7C028005B2F32 /* RealTrapCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTrapCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72CAF2F728C7C028005B2F32 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		72CAF2FB28C7C028005B2F32 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		72CAF2FE28C7C028005B2F32 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		72CAF2FB28C7C028005B2F32 /* CamViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CamViewController.swift; sourceTree = "<group>"; };
 		72CAF30028C7C02F005B2F32 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		72CAF30328C7C02F005B2F32 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		72CAF30528C7C02F005B2F32 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -58,8 +58,8 @@
 			children = (
 				72CAF2F728C7C028005B2F32 /* AppDelegate.swift */,
 				72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */,
-				72CAF2FB28C7C028005B2F32 /* ViewController.swift */,
-				72CAF2FD28C7C028005B2F32 /* Main.storyboard */,
+				72CAF2FB28C7C028005B2F32 /* CamViewController.swift */,
+				7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */,
 				72CAF30028C7C02F005B2F32 /* Assets.xcassets */,
 				72CAF30228C7C02F005B2F32 /* LaunchScreen.storyboard */,
 				72CAF30528C7C02F005B2F32 /* Info.plist */,
@@ -127,7 +127,6 @@
 			files = (
 				72CAF30428C7C02F005B2F32 /* LaunchScreen.storyboard in Resources */,
 				72CAF30128C7C02F005B2F32 /* Assets.xcassets in Resources */,
-				72CAF2FF28C7C028005B2F32 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,23 +137,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				72CAF2FC28C7C028005B2F32 /* ViewController.swift in Sources */,
+				72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */,
 				72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */,
 				72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */,
+				7213C0FC28EC5FD7003C40AC /* LastPhotoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		72CAF2FD28C7C028005B2F32 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				72CAF2FE28C7C028005B2F32 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		72CAF30228C7C02F005B2F32 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -287,12 +279,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R9FCZ2FMU3;
+				DEVELOPMENT_TEAM = 3MGVWL83BU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -300,7 +291,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cappasity.RealTrapCamera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RealTrapCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -315,12 +306,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R9FCZ2FMU3;
+				DEVELOPMENT_TEAM = 3MGVWL83BU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -328,7 +318,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cappasity.RealTrapCamera;
+				PRODUCT_BUNDLE_IDENTIFIER = com.RealTrapCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
