@@ -63,6 +63,7 @@ class CamViewController: UIViewController {
         super.viewDidAppear(animated)
         checkPermissions()
         setupAndStartCaptureSession()
+        setUpZoomRecognizer()
     }
 
     private func setUpUI() {
@@ -88,6 +89,12 @@ class CamViewController: UIViewController {
         lastPhotoView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         lastPhotoView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25).isActive = true
         lastPhotoView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25).isActive = true
+    }
+
+    private func setUpZoomRecognizer() {
+        let zoomRecognizer = UIPinchGestureRecognizer()
+        zoomRecognizer.addTarget(self, action: #selector(didPinch(_:)))
+        view.addGestureRecognizer(zoomRecognizer)
     }
 
     private func currentDevice() -> AVCaptureDevice? {
@@ -240,6 +247,9 @@ class CamViewController: UIViewController {
         }
     }
 
+    private func minMaxZoom(_ factor: CGFloat) -> CGFloat { return min(max(factor, 1.0), zoomLimit) }
+
+
     @objc private func captureImage(_ sender: UIButton?){
         takePicture = true
         lastViewIsHidden = false
@@ -247,6 +257,12 @@ class CamViewController: UIViewController {
 
     @objc func switchCamera(_ sender: UIButton?){
         switchCameraInput()
+    }
+
+    @objc func didPinch(_ recognizer: UIPinchGestureRecognizer) {
+        if recognizer.state == .changed {
+            setZoom(scale: recognizer.scale, smoothly: false)
+        }
     }
 
     private func updateZoom(scale: CGFloat, smoothly: Bool) {
@@ -262,6 +278,26 @@ class CamViewController: UIViewController {
             print(error.localizedDescription)
         }
     }
+
+    func setZoom(scale: CGFloat, smoothly: Bool) {
+        guard let zoomFactor = backCamera?.videoZoomFactor else {
+            return
+        }
+        var newScaleFactor: CGFloat = 0
+
+        if smoothly {
+            newScaleFactor = scale
+        } else {
+            if scale >= 1.0 {
+                newScaleFactor = zoomFactor + (scale / 50)
+            } else {
+                newScaleFactor = zoomFactor - ((scale + 1) / 50)
+            }
+            newScaleFactor = minMaxZoom(newScaleFactor)
+        }
+        updateZoom(scale: newScaleFactor, smoothly: smoothly)
+    }
+
 }
 
 extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
