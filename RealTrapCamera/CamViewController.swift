@@ -67,6 +67,7 @@ class CamViewController: UIViewController {
         setUpZoomRecognizer()
     }
 
+// MARK: - UI
     private func setUpUI() {
         view.addSubview(captureImageButton)
         view.addSubview(lastPhotoView)
@@ -98,6 +99,7 @@ class CamViewController: UIViewController {
         view.addGestureRecognizer(zoomRecognizer)
     }
 
+// MARK: - captureSession: outputs and inputs
     private func currentDevice() -> AVCaptureDevice? {
         let devices = discoverySession.devices
         if devices.isEmpty {
@@ -177,11 +179,22 @@ class CamViewController: UIViewController {
         }
     }
 
-    private func switchCameraInput(){
-        //don't let user spam the button, fun for the user, not fun for performance
+    private func setupOutput() {
+        let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
+        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
+
+        if captureSession.canAddOutput(videoOutput) {
+            captureSession.addOutput(videoOutput)
+        } else {
+            fatalError("could not add video output")
+        }
+
+        videoOutput.connections.first?.videoOrientation = .portrait
+    }
+
+    private func switchCameraInput() {
         switchCameraButton.isUserInteractionEnabled = false
 
-        //reconfigure the input
         captureSession.beginConfiguration()
         if backCameraOn {
             captureSession.removeInput(backInput)
@@ -196,70 +209,33 @@ class CamViewController: UIViewController {
             updateZoom(scale: startZoom, smoothly: false)
         }
 
-        //deal with the connection again for portrait mode
         videoOutput.connections.first?.videoOrientation = .portrait
-
-        //mirror the video stream for front camera
         videoOutput.connections.first?.isVideoMirrored = !backCameraOn
-
-        //commit config
         captureSession.commitConfiguration()
 
-        //acitvate the camera button again
         switchCameraButton.isUserInteractionEnabled = true
     }
-
-    private func setupOutput(){
-        let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
-        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
-
-        if captureSession.canAddOutput(videoOutput) {
-            captureSession.addOutput(videoOutput)
-        } else {
-            fatalError("could not add video output")
-        }
-
-        videoOutput.connections.first?.videoOrientation = .portrait
-    }
-
-    private func checkPermissions() {
-        let cameraAuthStatus =  AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
-        switch cameraAuthStatus {
-        case .authorized:
-            return
-        case .denied:
-            abort()
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler:
-                                            { (authorized) in
-                if(!authorized){
-                    abort()
-                }
-            })
-        case .restricted:
-            abort()
-        @unknown default:
-            fatalError()
-        }
-    }
-
-    private func minMaxZoom(_ factor: CGFloat) -> CGFloat { return min(max(factor, 1.0), zoomLimit) }
-
 
     @objc private func captureImage(_ sender: UIButton?){
         takePicture = true
         lastViewIsHidden = false
     }
 
-    @objc func switchCamera(_ sender: UIButton?){
+    @objc private func switchCamera(_ sender: UIButton?){
         switchCameraInput()
     }
+}
 
-    @objc func didPinch(_ recognizer: UIPinchGestureRecognizer) {
+// MARK: - zoom options
+extension CamViewController {
+
+    @objc private func didPinch(_ recognizer: UIPinchGestureRecognizer) {
         if recognizer.state == .changed {
             setZoom(scale: recognizer.scale, smoothly: false)
         }
     }
+
+    private func minMaxZoom(_ factor: CGFloat) -> CGFloat { return min(max(factor, 1.0), zoomLimit) }
 
     private func updateZoom(scale: CGFloat, smoothly: Bool) {
         do {
@@ -296,21 +272,40 @@ class CamViewController: UIViewController {
 
 }
 
+// MARK: - checking permision
+extension CamViewController {
+    private func checkPermissions() {
+        let cameraAuthStatus =  AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+        switch cameraAuthStatus {
+        case .authorized:
+            return
+        case .denied:
+            abort()
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler:
+                                            { (authorized) in
+                if(!authorized){
+                    abort()
+                }
+            })
+        case .restricted:
+            abort()
+        @unknown default:
+            fatalError()
+        }
+    }
+}
+
+// MARK: - handling shots
 extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if !takePicture {
-            return //we have nothing to do with the image buffer
+            return
         }
-
-        //try and get a CVImageBuffer out of the sample buffer
         guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
-
-        //get a CIImage out of the CVImageBuffer
         let ciImage = CIImage(cvImageBuffer: cvBuffer)
-
-        //get UIImage out of CIImage
         let uiImage = UIImage(ciImage: ciImage)
 
         DispatchQueue.main.async {
