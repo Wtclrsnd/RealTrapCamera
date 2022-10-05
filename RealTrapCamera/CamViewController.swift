@@ -30,6 +30,7 @@ class CamViewController: UIViewController {
 
     private var captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
+    private var captureDevice: AVCaptureDevice?
     private var backCamera: AVCaptureDevice?
     private var frontCamera: AVCaptureDevice?
     private let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes:
@@ -175,6 +176,7 @@ class CamViewController: UIViewController {
             fatalError("could not add front camera input to capture session")
         }
 
+        captureDevice = backCamera
         //connect back camera input to session
         captureSession.addInput(backInput)
 
@@ -192,10 +194,12 @@ class CamViewController: UIViewController {
         if backCameraOn {
             captureSession.removeInput(backInput)
             captureSession.addInput(frontInput)
+            captureDevice = frontCamera
             backCameraOn = false
         } else {
             captureSession.removeInput(frontInput)
             captureSession.addInput(backInput)
+            captureDevice = backCamera
             backCameraOn = true
             updateZoom(scale: startZoom, smoothly: false)
         }
@@ -267,12 +271,12 @@ class CamViewController: UIViewController {
 
     private func updateZoom(scale: CGFloat, smoothly: Bool) {
         do {
-            try backCamera?.lockForConfiguration()
-            defer { backCamera?.unlockForConfiguration() }
+            try captureDevice?.lockForConfiguration()
+            defer { captureDevice?.unlockForConfiguration() }
             if smoothly {
-                backCamera?.ramp(toVideoZoomFactor: scale, withRate: 5)
+                captureDevice?.ramp(toVideoZoomFactor: scale, withRate: 5)
             } else {
-                backCamera?.videoZoomFactor = scale
+                captureDevice?.videoZoomFactor = scale
             }
         } catch {
             print(error.localizedDescription)
@@ -280,7 +284,7 @@ class CamViewController: UIViewController {
     }
 
     func setZoom(scale: CGFloat, smoothly: Bool) {
-        guard let zoomFactor = backCamera?.videoZoomFactor else {
+        guard let zoomFactor = captureDevice?.videoZoomFactor else {
             return
         }
         var newScaleFactor: CGFloat = 0
