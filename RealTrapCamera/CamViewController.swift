@@ -117,7 +117,7 @@ class CamViewController: UIViewController {
     }
 
     private func setupAndStartCaptureSession(){
-        cameraQueue.async{
+        cameraQueue.async {
             //init session
             //start configuration
             self.captureSession.beginConfiguration()
@@ -146,38 +146,30 @@ class CamViewController: UIViewController {
         }
     }
 
-    private func setupInputs(){
+    private func setupInputs() {
         backCamera = currentDevice()
-
-        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-            frontCamera = device
-        } else {
-            fatalError("no front camera")
-        }
+        frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
         guard let backCamera = backCamera, let frontCamera = frontCamera else {
             return
         }
 
-        //now we need to create an input objects from our devices
-        guard let bInput = try? AVCaptureDeviceInput(device: backCamera) else {
-            fatalError("could not create input device from back camera")
-        }
-        backInput = bInput
-        if !captureSession.canAddInput(backInput) {
-            fatalError("could not add back camera input to capture session")
-        }
+        do {
+            backInput = try AVCaptureDeviceInput(device: backCamera)
+            guard captureSession.canAddInput(backInput) else {
+                return
+            }
 
-        guard let fInput = try? AVCaptureDeviceInput(device: frontCamera) else {
-            fatalError("could not create input device from front camera")
-        }
-        frontInput = fInput
-        if !captureSession.canAddInput(frontInput) {
-            fatalError("could not add front camera input to capture session")
+            frontInput = try AVCaptureDeviceInput(device: frontCamera)
+            guard captureSession.canAddInput(frontInput) else {
+                return
+            }
+        } catch {
+            fatalError("could not connect camera")
         }
 
         captureDevice = backCamera
-        //connect back camera input to session
+
         captureSession.addInput(backInput)
 
         if backCamera.deviceType == .builtInDualWideCamera || backCamera.deviceType == .builtInTripleCamera {
