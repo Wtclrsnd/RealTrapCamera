@@ -10,23 +10,7 @@ import AVFoundation
 
 class CamViewController: UIViewController {
 
-    private lazy var captureImageButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .white
-        button.tintColor = .white
-        button.layer.cornerRadius = 25
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
-    private lazy var switchCameraButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .green
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
-    private lazy var lastPhotoView = LastPhotoView()
+    private lazy var bottomBar = BottomBarView()
 
     private var captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -48,16 +32,9 @@ class CamViewController: UIViewController {
 
     private var takePicture = false
     private var backCameraOn = true
-    private var lastViewIsHidden = true {
-        didSet {
-            lastPhotoView.isHidden = lastViewIsHidden
-        }
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setUpUI()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -69,28 +46,16 @@ class CamViewController: UIViewController {
 
 // MARK: - UI
     private func setUpUI() {
-        view.addSubview(captureImageButton)
-        view.addSubview(lastPhotoView)
-        view.addSubview(switchCameraButton)
-        lastPhotoView.isHidden = true
 
-        captureImageButton.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
-        switchCameraButton.addTarget(self, action: #selector(switchCamera(_:)), for: .touchUpInside)
+        view.addSubview(bottomBar)
 
-        captureImageButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        captureImageButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        captureImageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        captureImageButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        bottomBar.captureImageButton.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
+        bottomBar.switchCameraButton.addTarget(self, action: #selector(switchCamera(_:)), for: .touchUpInside)
 
-        switchCameraButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        switchCameraButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        switchCameraButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        switchCameraButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-
-        lastPhotoView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        lastPhotoView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        lastPhotoView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25).isActive = true
-        lastPhotoView.heightAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.25).isActive = true
+        bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        bottomBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
     }
 
     private func setUpZoomRecognizer() {
@@ -115,6 +80,7 @@ class CamViewController: UIViewController {
     private func setUpPreviewLayer() {
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) as AVCaptureVideoPreviewLayer
         previewLayer.frame = view.bounds
+        previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
     }
 
@@ -136,6 +102,7 @@ class CamViewController: UIViewController {
             DispatchQueue.main.async {
                 //setup preview layer
                 self.setUpPreviewLayer()
+                self.setUpUI()
             }
 
             //setup output
@@ -180,20 +147,15 @@ class CamViewController: UIViewController {
     }
 
     private func setupOutput() {
-        let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
-        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
-
-        if captureSession.canAddOutput(videoOutput) {
-            captureSession.addOutput(videoOutput)
-        } else {
-            fatalError("could not add video output")
+        guard captureSession.canAddOutput(videoOutput) else {
+            return
         }
-
-        videoOutput.connections.first?.videoOrientation = .portrait
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        captureSession.addOutput(videoOutput)
     }
 
     private func switchCameraInput() {
-        switchCameraButton.isUserInteractionEnabled = false
+        bottomBar.switchCameraButton.isUserInteractionEnabled = false
 
         captureSession.beginConfiguration()
         if backCameraOn {
@@ -213,12 +175,11 @@ class CamViewController: UIViewController {
         videoOutput.connections.first?.isVideoMirrored = !backCameraOn
         captureSession.commitConfiguration()
 
-        switchCameraButton.isUserInteractionEnabled = true
+        bottomBar.switchCameraButton.isUserInteractionEnabled = true
     }
 
     @objc private func captureImage(_ sender: UIButton?){
         takePicture = true
-        lastViewIsHidden = false
     }
 
     @objc private func switchCamera(_ sender: UIButton?){
@@ -309,7 +270,7 @@ extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let uiImage = UIImage(ciImage: ciImage)
 
         DispatchQueue.main.async {
-            self.lastPhotoView.image = uiImage
+            self.bottomBar.lastPhotoView.image = uiImage
             self.takePicture = false
         }
     }

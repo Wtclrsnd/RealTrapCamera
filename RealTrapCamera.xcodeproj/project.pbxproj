@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7213C0FC28EC5FD7003C40AC /* LastPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */; };
+		723019B428EF0F8400AD590E /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723019B328EF0F8400AD590E /* BottomBarView.swift */; };
 		72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F728C7C028005B2F32 /* AppDelegate.swift */; };
 		72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */; };
 		72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2FB28C7C028005B2F32 /* CamViewController.swift */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastPhotoView.swift; sourceTree = "<group>"; };
+		723019B328EF0F8400AD590E /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		72CAF2F428C7C028005B2F32 /* RealTrapCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTrapCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72CAF2F728C7C028005B2F32 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				72CAF2F728C7C028005B2F32 /* AppDelegate.swift */,
 				72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */,
 				72CAF2FB28C7C028005B2F32 /* CamViewController.swift */,
+				723019B328EF0F8400AD590E /* BottomBarView.swift */,
 				7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */,
 				72CAF30028C7C02F005B2F32 /* Assets.xcassets */,
 				72CAF30228C7C02F005B2F32 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 				72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */,
 				72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */,
 				72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */,
+				723019B428EF0F8400AD590E /* BottomBarView.swift in Sources */,
 				7213C0FC28EC5FD7003C40AC /* LastPhotoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
