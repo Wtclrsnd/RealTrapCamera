@@ -13,7 +13,7 @@ protocol BottomBarDelegate: AnyObject {
 }
 class BottomBarView: UIView {
 
-    lazy var captureImageButton: UIButton = {
+    private lazy var captureImageButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .white
         button.tintColor = .white
@@ -22,14 +22,14 @@ class BottomBarView: UIView {
         return button
     }()
 
-    lazy var switchCameraButton: UIButton = {
+    private lazy var switchCameraButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = .green
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    lazy var lastPhotoView = LastPhotoView()
+    private lazy var lastPhotoView = LastPhotoView()
 
     weak var delegate: BottomBarDelegate?
 
@@ -48,24 +48,38 @@ class BottomBarView: UIView {
         addSubview(switchCameraButton)
         addSubview(lastPhotoView)
 
-        backgroundColor = .black
-        alpha = 0.5
+        backgroundColor = .black.withAlphaComponent(0.5)
+
         translatesAutoresizingMaskIntoConstraints = false
 
         captureImageButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        captureImageButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        captureImageButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         captureImageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         captureImageButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
 
         switchCameraButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20).isActive = true
-        switchCameraButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        switchCameraButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         switchCameraButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
         switchCameraButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
         lastPhotoView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20).isActive = true
-        lastPhotoView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant:  -20).isActive = true
+        lastPhotoView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         lastPhotoView.widthAnchor.constraint(equalToConstant: 50).isActive = true
         lastPhotoView.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
+        captureImageButton.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
+        switchCameraButton.addTarget(self, action: #selector(switchCamera(_:)), for: .touchUpInside)
+    }
+
+    @objc private func captureImage(_ sender: UIButton?) {
+        delegate?.takePhoto()
+    }
+
+    @objc private func switchCamera(_ sender: UIButton?) {
+        delegate?.switchCamera()
+    }
+
+    func setUpPhoto(image: UIImage) {
+        lastPhotoView.image = image
     }
 }

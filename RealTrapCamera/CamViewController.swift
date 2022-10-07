@@ -28,7 +28,7 @@ class CamViewController: UIViewController {
     private var previewLayer: AVCaptureVideoPreviewLayer!
 
     private var startZoom: CGFloat = 2.0
-    private let zoomLimit: CGFloat = 5.0
+    private let zoomLimit: CGFloat = 10.0
 
     private var takePicture = false
     private var backCameraOn = true
@@ -49,13 +49,12 @@ class CamViewController: UIViewController {
 
         view.addSubview(bottomBar)
 
-        bottomBar.captureImageButton.addTarget(self, action: #selector(captureImage(_:)), for: .touchUpInside)
-        bottomBar.switchCameraButton.addTarget(self, action: #selector(switchCamera(_:)), for: .touchUpInside)
+        bottomBar.delegate = self
 
         bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        bottomBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.15).isActive = true
+        bottomBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.23).isActive = true
     }
 
     private func setUpZoomRecognizer() {
@@ -155,8 +154,6 @@ class CamViewController: UIViewController {
     }
 
     private func switchCameraInput() {
-        bottomBar.switchCameraButton.isUserInteractionEnabled = false
-
         captureSession.beginConfiguration()
         if backCameraOn {
             captureSession.removeInput(backInput)
@@ -174,17 +171,20 @@ class CamViewController: UIViewController {
         videoOutput.connections.first?.videoOrientation = .portrait
         videoOutput.connections.first?.isVideoMirrored = !backCameraOn
         captureSession.commitConfiguration()
+    }
+}
 
-        bottomBar.switchCameraButton.isUserInteractionEnabled = true
+// MARK: - Bottom bar delegate
+extension CamViewController: BottomBarDelegate {
+    func switchCamera() {
+        switchCameraInput()
     }
 
-    @objc private func captureImage(_ sender: UIButton?){
+    func takePhoto() {
         takePicture = true
     }
 
-    @objc private func switchCamera(_ sender: UIButton?){
-        switchCameraInput()
-    }
+
 }
 
 // MARK: - zoom options
@@ -222,9 +222,9 @@ extension CamViewController {
             newScaleFactor = scale
         } else {
             if scale >= 1.0 {
-                newScaleFactor = zoomFactor + (scale / 50)
+                newScaleFactor = zoomFactor + (scale / 30)
             } else {
-                newScaleFactor = zoomFactor - ((scale + 1) / 50)
+                newScaleFactor = zoomFactor - ((scale + 1) / 30)
             }
             newScaleFactor = minMaxZoom(newScaleFactor)
         }
@@ -270,7 +270,7 @@ extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let uiImage = UIImage(ciImage: ciImage)
 
         DispatchQueue.main.async {
-            self.bottomBar.lastPhotoView.image = uiImage
+            self.bottomBar.setUpPhoto(image: uiImage)
             self.takePicture = false
         }
     }
