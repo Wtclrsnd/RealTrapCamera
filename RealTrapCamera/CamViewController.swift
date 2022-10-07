@@ -141,7 +141,7 @@ class CamViewController: UIViewController {
         captureSession.addInput(backInput)
 
         if backCamera.deviceType == .builtInDualWideCamera || backCamera.deviceType == .builtInTripleCamera {
-            updateZoom(scale: startZoom, smoothly: false)
+            updateZoom(scale: startZoom)
         }
     }
 
@@ -165,7 +165,7 @@ class CamViewController: UIViewController {
             captureSession.addInput(backInput)
             captureDevice = backCamera
             backCameraOn = true
-            updateZoom(scale: startZoom, smoothly: false)
+            updateZoom(scale: startZoom)
         }
 
         videoOutput.connections.first?.videoOrientation = .portrait
@@ -192,43 +192,28 @@ extension CamViewController {
 
     @objc private func didPinch(_ recognizer: UIPinchGestureRecognizer) {
         if recognizer.state == .changed {
-            setZoom(scale: recognizer.scale, smoothly: false)
+            setZoom(scale: recognizer.scale)
         }
     }
 
     private func minMaxZoom(_ factor: CGFloat) -> CGFloat { return min(max(factor, 1.0), zoomLimit) }
 
-    private func updateZoom(scale: CGFloat, smoothly: Bool) {
+    private func updateZoom(scale: CGFloat) {
         do {
             try captureDevice?.lockForConfiguration()
             defer { captureDevice?.unlockForConfiguration() }
-            if smoothly {
-                captureDevice?.ramp(toVideoZoomFactor: scale, withRate: 5)
-            } else {
                 captureDevice?.videoZoomFactor = scale
-            }
         } catch {
             print(error.localizedDescription)
         }
     }
 
-    func setZoom(scale: CGFloat, smoothly: Bool) {
+    func setZoom(scale: CGFloat) {
         guard let zoomFactor = captureDevice?.videoZoomFactor else {
             return
         }
-        var newScaleFactor: CGFloat = 0
-
-        if smoothly {
-            newScaleFactor = scale
-        } else {
-            if scale >= 1.0 {
-                newScaleFactor = zoomFactor + (scale / 30)
-            } else {
-                newScaleFactor = zoomFactor - ((scale + 1) / 30)
-            }
-            newScaleFactor = minMaxZoom(newScaleFactor)
-        }
-        updateZoom(scale: newScaleFactor, smoothly: smoothly)
+        var newScaleFactor: CGFloat = minMaxZoom(zoomFactor * scale)
+        updateZoom(scale: newScaleFactor)
     }
 
 }
