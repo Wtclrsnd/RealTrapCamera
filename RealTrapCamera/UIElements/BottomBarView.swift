@@ -13,18 +13,16 @@ protocol BottomBarDelegate: AnyObject {
 }
 class BottomBarView: UIView {
 
-    private lazy var captureImageButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = .white
-        button.tintColor = .white
-        button.layer.cornerRadius = 25
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
+    private lazy var captureImageButton = CaptureImageButton()
 
     private lazy var switchCameraButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .green
+        button.tintColor = .white
+        button.backgroundColor = .lavanda.withAlphaComponent(0.2)
+        button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.configuration = .borderless()
+        button.layer.cornerRadius = 25
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -54,8 +52,6 @@ class BottomBarView: UIView {
 
         captureImageButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         captureImageButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        captureImageButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        captureImageButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
 
         switchCameraButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20).isActive = true
         switchCameraButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

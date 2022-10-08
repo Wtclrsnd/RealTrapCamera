@@ -11,6 +11,7 @@ import AVFoundation
 class CamViewController: UIViewController {
 
     private lazy var bottomBar = BottomBarView()
+    private lazy var topBar = TopBarView()
 
     private var captureSession = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -47,14 +48,21 @@ class CamViewController: UIViewController {
 // MARK: - UI
     private func setUpUI() {
 
+        view.addSubview(topBar)
         view.addSubview(bottomBar)
 
+        topBar.delegate = self
         bottomBar.delegate = self
 
         bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         bottomBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.23).isActive = true
+
+        topBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        topBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        topBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        topBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.14).isActive = true
     }
 
     private func setUpZoomRecognizer() {
@@ -212,7 +220,14 @@ extension CamViewController {
         guard let zoomFactor = captureDevice?.videoZoomFactor else {
             return
         }
-        var newScaleFactor: CGFloat = minMaxZoom(zoomFactor * scale)
+        var newScaleFactor: CGFloat = 0
+        if scale < 1.0 {
+            newScaleFactor = zoomFactor - pow(zoomLimit, 1.0 - scale)
+        }
+        else {
+            newScaleFactor = zoomFactor + pow(zoomLimit, (scale - 1.0) / 2.0)
+        }
+        newScaleFactor = minMaxZoom(zoomFactor * scale)
         updateZoom(scale: newScaleFactor)
     }
 

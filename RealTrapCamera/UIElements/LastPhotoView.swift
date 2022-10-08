@@ -38,7 +38,7 @@ class LastPhotoView: UIView {
     //MARK:- Setup
     func setupView(){
         translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .white
+        backgroundColor = .lavanda
         layer.cornerRadius = 10
         addSubview(imageView)
 
