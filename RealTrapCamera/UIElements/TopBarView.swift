@@ -7,9 +7,25 @@
 
 import UIKit
 
+protocol TopBarDelegate: AnyObject {
+    
+    func switchFlash()
+    func switchFrame()
+}
+
 class TopBarView: UIView {
 
-    weak var delegate: BottomBarDelegate?
+    private lazy var flashButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = .white
+        button.backgroundColor = .clear
+        button.setImage(UIImage(systemName: "bolt.circle", withConfiguration: UIImage.SymbolConfiguration.init(pointSize: 30)), for: .normal)
+        button.imageView?.contentMode = .scaleToFill
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    weak var delegate: TopBarDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -25,5 +41,11 @@ class TopBarView: UIView {
 
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .black.withAlphaComponent(0.5)
+
+        addSubview(flashButton)
+        flashButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
+        flashButton.topAnchor.constraint(equalTo: topAnchor, constant: 50).isActive = true
+        flashButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        flashButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
 }

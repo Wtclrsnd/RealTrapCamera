@@ -195,6 +195,19 @@ extension CamViewController: BottomBarDelegate {
 
 }
 
+// MARK: - Top bar delegate
+extension CamViewController: TopBarDelegate {
+    func switchFlash() {
+
+    }
+
+    func switchFrame() {
+        
+    }
+
+
+}
+
 // MARK: - zoom options
 extension CamViewController {
 

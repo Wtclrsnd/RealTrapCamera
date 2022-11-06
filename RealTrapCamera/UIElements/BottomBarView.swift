@@ -8,6 +8,7 @@
 import UIKit
 
 protocol BottomBarDelegate: AnyObject {
+    
     func switchCamera()
     func takePhoto()
 }
@@ -19,9 +20,8 @@ class BottomBarView: UIView {
         let button = UIButton()
         button.tintColor = .white
         button.backgroundColor = .lavanda.withAlphaComponent(0.2)
-        button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
+        button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath", withConfiguration: UIImage.SymbolConfiguration.init(pointSize: 25)), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
-        button.configuration = .borderless()
         button.layer.cornerRadius = 25
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
