@@ -8,12 +8,6 @@
 import UIKit
 
 class LastPhotoView: UIView {
-    var image : UIImage? {
-        didSet {
-            guard let image = image else {return}
-            imageView.image = image
-        }
-    }
 
     //MARK:- View Components
     let imageView : UIImageView = {

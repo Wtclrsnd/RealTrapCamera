@@ -303,6 +303,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To make photos";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To Save Captured Photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -332,6 +334,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To make photos";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To Save Captured Photos";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

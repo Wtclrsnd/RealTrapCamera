@@ -36,6 +36,7 @@ class CamViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -159,6 +160,9 @@ class CamViewController: UIViewController {
         }
         videoOutput.alwaysDiscardsLateVideoFrames = true
         captureSession.addOutput(videoOutput)
+        let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
+        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
+        videoOutput.connections.first?.videoOrientation = .portrait
     }
 
     private func switchCameraInput() {
@@ -168,11 +172,13 @@ class CamViewController: UIViewController {
             captureSession.addInput(frontInput)
             captureDevice = frontCamera
             backCameraOn = false
+            topBar.flashButton.isHidden = true
         } else {
             captureSession.removeInput(frontInput)
             captureSession.addInput(backInput)
             captureDevice = backCamera
             backCameraOn = true
+            topBar.flashButton.isHidden = false
             updateZoom(scale: startZoom)
         }
 
@@ -197,14 +203,9 @@ extension CamViewController: BottomBarDelegate {
 
 // MARK: - Top bar delegate
 extension CamViewController: TopBarDelegate {
-    func switchFlash() {
-
+    func switchFlash(torch: Bool) {
+        toggleTorch(on: torch)
     }
-
-    func switchFrame() {
-        
-    }
-
 
 }
 
@@ -244,6 +245,29 @@ extension CamViewController {
         updateZoom(scale: newScaleFactor)
     }
 
+    func toggleTorch(on: Bool) {
+        guard let captureDevice = captureDevice else {
+            return
+        }
+
+        if captureDevice.hasTorch {
+            do {
+                try captureDevice.lockForConfiguration()
+
+                if on == true {
+                    captureDevice.torchMode = .on
+                } else {
+                    captureDevice.torchMode = .off
+                }
+
+                captureDevice.unlockForConfiguration()
+            } catch {
+                print("Torch could not be used")
+            }
+        } else {
+            print("Torch is not available")
+        }
+    }
 }
 
 // MARK: - checking permision
@@ -281,6 +305,8 @@ extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         let ciImage = CIImage(cvImageBuffer: cvBuffer)
         let uiImage = UIImage(ciImage: ciImage)
+        let imageSaver = ImageSaver()
+        imageSaver.writeToPhotoAlbum(image: uiImage)
 
         DispatchQueue.main.async {
             self.bottomBar.setUpPhoto(image: uiImage)
@@ -288,3 +314,14 @@ extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 }
+
+class ImageSaver: NSObject {
+    func writeToPhotoAlbum(image: UIImage) {
+        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
+    }
+
+    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        print("Save finished!")
+    }
+}
+

@@ -9,21 +9,31 @@ import UIKit
 
 protocol TopBarDelegate: AnyObject {
     
-    func switchFlash()
-    func switchFrame()
+    func switchFlash(torch: Bool)
 }
 
 class TopBarView: UIView {
 
-    private lazy var flashButton: UIButton = {
+    lazy var flashButton: UIButton = {
         let button = UIButton()
         button.tintColor = .white
         button.backgroundColor = .clear
         button.setImage(UIImage(systemName: "bolt.circle", withConfiguration: UIImage.SymbolConfiguration.init(pointSize: 30)), for: .normal)
         button.imageView?.contentMode = .scaleToFill
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(toggleFlash), for: .touchUpInside)
         return button
     }()
+
+    private var isTorchOn = false {
+        didSet {
+            if isTorchOn {
+                flashButton.tintColor = .lavanda
+            } else {
+                flashButton.tintColor = .white
+            }
+        }
+    }
 
     weak var delegate: TopBarDelegate?
 
@@ -47,5 +57,10 @@ class TopBarView: UIView {
         flashButton.topAnchor.constraint(equalTo: topAnchor, constant: 50).isActive = true
         flashButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
         flashButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+    }
+
+    @objc private func toggleFlash() {
+        isTorchOn.toggle()
+        delegate?.switchFlash(torch: isTorchOn)
     }
 }

@@ -76,6 +76,6 @@ class BottomBarView: UIView {
     }
 
     func setUpPhoto(image: UIImage) {
-        lastPhotoView.image = image
+        lastPhotoView.imageView.image = image
     }
 }
