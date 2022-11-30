@@ -9,7 +9,6 @@ import UIKit
 
 final class LastPhotoView: UIView {
 
-    //MARK:- View Components
     let imageView : UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -19,7 +18,6 @@ final class LastPhotoView: UIView {
         return imageView
     }()
 
-    //MARK:- Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupView()
@@ -29,8 +27,7 @@ final class LastPhotoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    //MARK:- Setup
-    func setupView(){
+    private func setupView(){
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .lavanda
         layer.cornerRadius = 10
