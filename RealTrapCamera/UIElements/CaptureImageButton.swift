@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CaptureImageButton: UIButton {
+final class CaptureImageButton: UIButton {
 
     override var intrinsicContentSize: CGSize {
         CGSize(width: 72, height: 72)

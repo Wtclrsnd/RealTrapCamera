@@ -8,7 +8,7 @@
 import UIKit
 import AVFoundation
 
-class CamViewController: UIViewController {
+final class CamViewController: UIViewController {
 
     private lazy var bottomBar = BottomBarView()
     private lazy var topBar = TopBarView()
@@ -36,14 +36,13 @@ class CamViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        checkPermissions()
+        setupAndStartCaptureSession()
+        setUpZoomRecognizer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        checkPermissions()
-        setupAndStartCaptureSession()
-        setUpZoomRecognizer()
     }
 
 // MARK: - UI
@@ -305,23 +304,12 @@ extension CamViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         let ciImage = CIImage(cvImageBuffer: cvBuffer)
         let uiImage = UIImage(ciImage: ciImage)
-        let imageSaver = ImageSaver()
-        imageSaver.writeToPhotoAlbum(image: uiImage)
+        ImageSaver.writeToPhotoAlbum(image: uiImage)
 
         DispatchQueue.main.async {
             self.bottomBar.setUpPhoto(image: uiImage)
             self.takePicture = false
         }
-    }
-}
-
-class ImageSaver: NSObject {
-    func writeToPhotoAlbum(image: UIImage) {
-        UIImageWriteToSavedPhotosAlbum(image, self, #selector(saveCompleted), nil)
-    }
-
-    @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
-        print("Save finished!")
     }
 }
 

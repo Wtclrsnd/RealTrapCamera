@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LastPhotoView: UIView {
+final class LastPhotoView: UIView {
 
     //MARK:- View Components
     let imageView : UIImageView = {

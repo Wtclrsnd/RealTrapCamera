@@ -12,7 +12,7 @@ protocol TopBarDelegate: AnyObject {
     func switchFlash(torch: Bool)
 }
 
-class TopBarView: UIView {
+final class TopBarView: UIView {
 
     lazy var flashButton: UIButton = {
         let button = UIButton()

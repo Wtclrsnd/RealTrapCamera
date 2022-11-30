@@ -12,7 +12,8 @@ protocol BottomBarDelegate: AnyObject {
     func switchCamera()
     func takePhoto()
 }
-class BottomBarView: UIView {
+
+final class BottomBarView: UIView {
 
     private lazy var captureImageButton = CaptureImageButton()
 
