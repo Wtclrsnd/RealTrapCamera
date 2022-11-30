@@ -93,31 +93,23 @@ final class CamViewController: UIViewController {
 
     private func setupAndStartCaptureSession(){
         cameraQueue.async {
-            //init session
-            //start configuration
             self.captureSession.beginConfiguration()
 
-            //session specific configuration
             if self.captureSession.canSetSessionPreset(.photo) {
                 self.captureSession.sessionPreset = .photo
             }
             self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true
 
-            //setup inputs
             self.setupInputs()
 
             DispatchQueue.main.async {
-                //setup preview layer
                 self.setUpPreviewLayer()
                 self.setUpUI()
             }
 
-            //setup output
             self.setupOutput()
 
-            //commit configuration
             self.captureSession.commitConfiguration()
-            //start running it
             self.captureSession.startRunning()
         }
     }
