@@ -36,11 +36,9 @@ final class LastPhotoView: UIView {
         layer.cornerRadius = 10
         addSubview(imageView)
 
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 2),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
-        ])
+        imageView.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
     }
 }
