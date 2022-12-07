@@ -102,7 +102,7 @@ final class CameraService: NSObject {
             if self.captureSession.canSetSessionPreset(.photo) {
                 self.captureSession.sessionPreset = .photo
             }
-            self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true // to watch
+            self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true
 
             self.setupInputs()
             self.setupOutput()
@@ -147,14 +147,14 @@ final class CameraService: NSObject {
         guard captureSession.canAddOutput(videoOutput) else {
             return
         }
-        videoOutput.alwaysDiscardsLateVideoFrames = true // todo
+        videoOutput.alwaysDiscardsLateVideoFrames = true
         captureSession.addOutput(videoOutput)
         let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
         videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
         videoOutput.connections.first?.videoOrientation = .portrait
     }
 
-    func switchCameraInput() { // to move
+    func switchCameraInput() {
         captureSession.beginConfiguration()
         if backCameraOn {
             captureSession.removeInput(backInput)
