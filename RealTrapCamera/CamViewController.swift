@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CamViewController.swift
 //  RealTrapCamera
 //
 //  Created by Emil Shpeklord on 06.09.2022.
