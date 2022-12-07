@@ -99,7 +99,7 @@ extension CamViewController {
 // MARK: - checking permision
 extension CamViewController {
 
-    private func checkPermissions() {
+    private func checkPermissions() { // todo
         let cameraAuthStatus =  AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
         switch cameraAuthStatus {
         case .authorized:

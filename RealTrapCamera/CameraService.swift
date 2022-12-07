@@ -44,6 +44,45 @@ final class CameraService: NSObject {
         setupAndStartCaptureSession()
     }
 
+    func setZoom(scale: CGFloat) {
+        guard let zoomFactor = captureDevice?.videoZoomFactor else {
+            return
+        }
+        var newScaleFactor: CGFloat = 0
+        if scale < 1.0 {
+            newScaleFactor = zoomFactor - pow(zoomLimit, 1.0 - scale)
+        }
+        else {
+            newScaleFactor = zoomFactor + pow(zoomLimit, (scale - 1.0) / 2.0)
+        }
+        newScaleFactor = minMaxZoom(zoomFactor * scale)
+        updateZoom(scale: newScaleFactor)
+    }
+
+    func toggleTorch(on: Bool) {
+        guard let captureDevice = captureDevice else {
+            return
+        }
+
+        if captureDevice.hasTorch {
+            do {
+                try captureDevice.lockForConfiguration()
+
+                if on == true {
+                    captureDevice.torchMode = .on
+                } else {
+                    captureDevice.torchMode = .off
+                }
+
+                captureDevice.unlockForConfiguration()
+            } catch {
+                print("Torch could not be used")
+            }
+        } else {
+            print("Torch is not available")
+        }
+    }
+
     private func currentDevice() -> AVCaptureDevice? {
         let devices = discoverySession.devices
         if devices.isEmpty {
@@ -63,7 +102,7 @@ final class CameraService: NSObject {
             if self.captureSession.canSetSessionPreset(.photo) {
                 self.captureSession.sessionPreset = .photo
             }
-            self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true
+            self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true // to watch
 
             self.setupInputs()
             self.setupOutput()
@@ -108,14 +147,14 @@ final class CameraService: NSObject {
         guard captureSession.canAddOutput(videoOutput) else {
             return
         }
-        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.alwaysDiscardsLateVideoFrames = true // todo
         captureSession.addOutput(videoOutput)
         let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
         videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
         videoOutput.connections.first?.videoOrientation = .portrait
     }
 
-    func switchCameraInput() {
+    func switchCameraInput() { // to move
         captureSession.beginConfiguration()
         if backCameraOn {
             captureSession.removeInput(backInput)
@@ -146,45 +185,6 @@ final class CameraService: NSObject {
             captureDevice?.videoZoomFactor = scale
         } catch {
             print(error.localizedDescription)
-        }
-    }
-
-    func setZoom(scale: CGFloat) {
-        guard let zoomFactor = captureDevice?.videoZoomFactor else {
-            return
-        }
-        var newScaleFactor: CGFloat = 0
-        if scale < 1.0 {
-            newScaleFactor = zoomFactor - pow(zoomLimit, 1.0 - scale)
-        }
-        else {
-            newScaleFactor = zoomFactor + pow(zoomLimit, (scale - 1.0) / 2.0)
-        }
-        newScaleFactor = minMaxZoom(zoomFactor * scale)
-        updateZoom(scale: newScaleFactor)
-    }
-
-    func toggleTorch(on: Bool) {
-        guard let captureDevice = captureDevice else {
-            return
-        }
-
-        if captureDevice.hasTorch {
-            do {
-                try captureDevice.lockForConfiguration()
-
-                if on == true {
-                    captureDevice.torchMode = .on
-                } else {
-                    captureDevice.torchMode = .off
-                }
-
-                captureDevice.unlockForConfiguration()
-            } catch {
-                print("Torch could not be used")
-            }
-        } else {
-            print("Torch is not available")
         }
     }
 }
