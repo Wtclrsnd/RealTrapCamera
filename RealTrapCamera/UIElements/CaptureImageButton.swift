@@ -27,10 +27,3 @@ final class CaptureImageButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-extension UIColor {
-
-    static var lavanda: UIColor {
-        return UIColor(red: 0.605, green: 0.407, blue: 0.929, alpha: 1)
-    }
-}
