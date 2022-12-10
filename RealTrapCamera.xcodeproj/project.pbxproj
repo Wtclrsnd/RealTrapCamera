@@ -11,7 +11,8 @@
 		723019B428EF0F8400AD590E /* BottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723019B328EF0F8400AD590E /* BottomBarView.swift */; };
 		723019B728F02FD100AD590E /* CaptureImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723019B628F02FD100AD590E /* CaptureImageButton.swift */; };
 		723019B928F1E74D00AD590E /* TopBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723019B828F1E74D00AD590E /* TopBarView.swift */; };
-		72A4DDE0293741D500FFDC96 /* ImageSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A4DDDF293741D500FFDC96 /* ImageSaver.swift */; };
+		72A4DDE22940DFDF00FFDC96 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A4DDE12940DFDE00FFDC96 /* CameraService.swift */; };
+		72A4DDE42940EF6C00FFDC96 /* Lavanda.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72A4DDE32940EF6C00FFDC96 /* Lavanda.swift */; };
 		72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F728C7C028005B2F32 /* AppDelegate.swift */; };
 		72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */; };
 		72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CAF2FB28C7C028005B2F32 /* CamViewController.swift */; };
@@ -24,7 +25,8 @@
 		723019B328EF0F8400AD590E /* BottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarView.swift; sourceTree = "<group>"; };
 		723019B628F02FD100AD590E /* CaptureImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureImageButton.swift; sourceTree = "<group>"; };
 		723019B828F1E74D00AD590E /* TopBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBarView.swift; sourceTree = "<group>"; };
-		72A4DDDF293741D500FFDC96 /* ImageSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSaver.swift; sourceTree = "<group>"; };
+		72A4DDE12940DFDE00FFDC96 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		72A4DDE32940EF6C00FFDC96 /* Lavanda.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lavanda.swift; sourceTree = "<group>"; };
 		72CAF2F428C7C028005B2F32 /* RealTrapCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RealTrapCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72CAF2F728C7C028005B2F32 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -52,6 +54,7 @@
 				7213C0FB28EC5FD7003C40AC /* LastPhotoView.swift */,
 				723019B628F02FD100AD590E /* CaptureImageButton.swift */,
 				723019B828F1E74D00AD590E /* TopBarView.swift */,
+				72A4DDE32940EF6C00FFDC96 /* Lavanda.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -78,7 +81,7 @@
 				72CAF2F728C7C028005B2F32 /* AppDelegate.swift */,
 				72CAF2F928C7C028005B2F32 /* SceneDelegate.swift */,
 				72CAF2FB28C7C028005B2F32 /* CamViewController.swift */,
-				72A4DDDF293741D500FFDC96 /* ImageSaver.swift */,
+				72A4DDE12940DFDE00FFDC96 /* CameraService.swift */,
 				723019B528F02FA300AD590E /* UIElements */,
 				72CAF30028C7C02F005B2F32 /* Assets.xcassets */,
 				72CAF30228C7C02F005B2F32 /* LaunchScreen.storyboard */,
@@ -160,11 +163,12 @@
 				72CAF2FC28C7C028005B2F32 /* CamViewController.swift in Sources */,
 				72CAF2F828C7C028005B2F32 /* AppDelegate.swift in Sources */,
 				723019B728F02FD100AD590E /* CaptureImageButton.swift in Sources */,
+				72A4DDE42940EF6C00FFDC96 /* Lavanda.swift in Sources */,
 				72CAF2FA28C7C028005B2F32 /* SceneDelegate.swift in Sources */,
 				723019B928F1E74D00AD590E /* TopBarView.swift in Sources */,
 				723019B428EF0F8400AD590E /* BottomBarView.swift in Sources */,
 				7213C0FC28EC5FD7003C40AC /* LastPhotoView.swift in Sources */,
-				72A4DDE0293741D500FFDC96 /* ImageSaver.swift in Sources */,
+				72A4DDE22940DFDF00FFDC96 /* CameraService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,7 +312,7 @@
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To make photos";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To Save Captured Photos";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "to save photos";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -339,7 +343,7 @@
 				INFOPLIST_FILE = RealTrapCamera/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "To make photos";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "To Save Captured Photos";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "to save photos";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
