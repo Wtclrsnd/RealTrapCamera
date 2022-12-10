@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 
 protocol CameraServiceDelegate: AnyObject {
+
     func setPhoto(image: UIImage)
     func toggleIsHiddenFlashButton()
 }
@@ -19,10 +20,6 @@ final class CameraService: NSObject {
     private var captureDevice: AVCaptureDevice?
     private var backCamera: AVCaptureDevice?
     private var frontCamera: AVCaptureDevice?
-    private let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes:
-                                                                        [.builtInTripleCamera,.builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera],
-                                                                    mediaType: .video,
-                                                                    position: .back)
 
     private var backInput: AVCaptureInput!
     private var frontInput: AVCaptureInput!
@@ -35,7 +32,7 @@ final class CameraService: NSObject {
 
     var takePicture = false
 
-    var delegate: CameraServiceDelegate?
+    weak var delegate: CameraServiceDelegate?
 
     var captureSession = AVCaptureSession()
 
@@ -49,12 +46,11 @@ final class CameraService: NSObject {
             return
         }
         var newScaleFactor: CGFloat = 0
-        if scale < 1.0 {
-            newScaleFactor = zoomFactor - pow(zoomLimit, 1.0 - scale)
-        }
-        else {
-            newScaleFactor = zoomFactor + pow(zoomLimit, (scale - 1.0) / 2.0)
-        }
+
+        newScaleFactor = (scale < 1.0
+        ? (zoomFactor - pow(zoomLimit, 1.0 - scale))
+        : (zoomFactor + pow(zoomLimit, (scale - 1.0) / 2.0)))
+
         newScaleFactor = minMaxZoom(zoomFactor * scale)
         updateZoom(scale: newScaleFactor)
     }
@@ -65,37 +61,29 @@ final class CameraService: NSObject {
         }
 
         if captureDevice.hasTorch {
-            do {
-                try captureDevice.lockForConfiguration()
-
-                if on == true {
-                    captureDevice.torchMode = .on
-                } else {
-                    captureDevice.torchMode = .off
-                }
-
-                captureDevice.unlockForConfiguration()
-            } catch {
-                print("Torch could not be used")
-            }
+            tryToggleTorch(on: on)
         } else {
             print("Torch is not available")
         }
     }
 
     private func currentDevice() -> AVCaptureDevice? {
-        let devices = discoverySession.devices
-        if devices.isEmpty {
-            fatalError("No Camera")
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes:
+                                                                    [.builtInTripleCamera,.builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera],
+                                                                mediaType: .video,
+                                                                position: .back)
+        guard let device = discoverySession.devices.first
+        else {
+            return nil
         }
-        let device = devices.first
-        if device?.deviceType == .builtInDualCamera || device?.deviceType == .builtInWideAngleCamera {
+
+        if device.deviceType == .builtInDualCamera || device.deviceType == .builtInWideAngleCamera {
             startZoom = 1.0
         }
         return device
     }
 
-    private func setupAndStartCaptureSession(){
+    private func setupAndStartCaptureSession() {
         cameraQueue.async {
             self.captureSession.beginConfiguration()
 
@@ -116,7 +104,9 @@ final class CameraService: NSObject {
         backCamera = currentDevice()
         frontCamera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
-        guard let backCamera = backCamera, let frontCamera = frontCamera else {
+        guard let backCamera = backCamera,
+              let frontCamera = frontCamera
+        else {
             return
         }
 
@@ -176,25 +166,37 @@ final class CameraService: NSObject {
         captureSession.commitConfiguration()
     }
 
-    private func minMaxZoom(_ factor: CGFloat) -> CGFloat { return min(max(factor, 1.0), zoomLimit) }
+    private func minMaxZoom(_ factor: CGFloat) -> CGFloat { min(max(factor, 1.0), zoomLimit) }
 
     private func updateZoom(scale: CGFloat) {
         do {
-            try captureDevice?.lockForConfiguration()
             defer { captureDevice?.unlockForConfiguration() }
+            try captureDevice?.lockForConfiguration()
             captureDevice?.videoZoomFactor = scale
         } catch {
             print(error.localizedDescription)
         }
     }
+
+    private func tryToggleTorch(on: Bool) {
+        do {
+            try captureDevice?.lockForConfiguration()
+
+            captureDevice?.torchMode = on
+            ? .on
+            : .off
+
+            captureDevice?.unlockForConfiguration()
+        } catch {
+            print("Torch could not be used")
+        }
+    }
 }
 
 extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
+
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if !takePicture {
-            return
-        }
-        guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), takePicture == true else {
             return
         }
         let ciImage = CIImage(cvImageBuffer: cvBuffer)

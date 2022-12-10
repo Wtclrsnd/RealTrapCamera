@@ -12,15 +12,24 @@ final class CamViewController: UIViewController {
 
     private lazy var bottomBar = BottomBarView()
     private lazy var topBar = TopBarView()
-    private var cameraService: CameraService?
+    private var cameraService: CameraService
+
+    init(cameraService: CameraService) {
+        self.cameraService = cameraService
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraService = CameraService()
-        cameraService?.delegate = self
+        cameraService.delegate = self
         checkPermissions()
-        setUpPreviewLayer()
-        setUpUI()
+        setupPreviewLayer()
+        setupUI()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -28,8 +37,9 @@ final class CamViewController: UIViewController {
     }
 
 // MARK: - UI
-    private func setUpUI() {
-        setUpZoomRecognizer()
+
+    private func setupUI() {
+        setupZoomRecognizer()
 
         view.addSubview(topBar)
         view.addSubview(bottomBar)
@@ -48,17 +58,15 @@ final class CamViewController: UIViewController {
         topBar.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.14).isActive = true
     }
 
-    private func setUpZoomRecognizer() {
+    private func setupZoomRecognizer() {
         let zoomRecognizer = UIPinchGestureRecognizer()
         zoomRecognizer.addTarget(self, action: #selector(didPinch(_:)))
         view.addGestureRecognizer(zoomRecognizer)
     }
 
-    private func setUpPreviewLayer() {
-        guard let service = cameraService else {
-            return
-        }
-        let previewLayer = AVCaptureVideoPreviewLayer(session: service.captureSession) as AVCaptureVideoPreviewLayer
+    private func setupPreviewLayer() {
+        let previewLayer = AVCaptureVideoPreviewLayer(session: cameraService.captureSession) as AVCaptureVideoPreviewLayer
+
         previewLayer.frame = view.bounds
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
@@ -68,22 +76,24 @@ final class CamViewController: UIViewController {
 }
 
 // MARK: - Bottom bar delegate
+
 extension CamViewController: BottomBarDelegate {
 
     func switchCamera() {
-        cameraService?.switchCameraInput()
+        cameraService.switchCameraInput()
     }
 
     func takePhoto() {
-        cameraService?.takePicture = true
+        cameraService.takePicture = true
     }
 }
 
 // MARK: - Top bar delegate
+
 extension CamViewController: TopBarDelegate {
 
-    func switchFlash(torch: Bool) {
-        cameraService?.toggleTorch(on: torch)
+    func switchTorch(isOn: Bool) {
+        cameraService.toggleTorch(on: isOn)
     }
 }
 
@@ -91,15 +101,16 @@ extension CamViewController {
 
     @objc private func didPinch(_ recognizer: UIPinchGestureRecognizer) {
         if recognizer.state == .changed {
-            cameraService?.setZoom(scale: recognizer.scale)
+            cameraService.setZoom(scale: recognizer.scale)
         }
     }
 }
 
 // MARK: - checking permision
+
 extension CamViewController {
 
-    private func checkPermissions() { // todo
+    private func checkPermissions() {
         let cameraAuthStatus =  AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
         switch cameraAuthStatus {
         case .authorized:

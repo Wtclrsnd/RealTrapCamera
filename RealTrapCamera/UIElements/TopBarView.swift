@@ -9,7 +9,7 @@ import UIKit
 
 protocol TopBarDelegate: AnyObject {
     
-    func switchFlash(torch: Bool)
+    func switchTorch(isOn: Bool)
 }
 
 final class TopBarView: UIView {
@@ -61,6 +61,6 @@ final class TopBarView: UIView {
 
     @objc private func toggleFlash() {
         isTorchOn.toggle()
-        delegate?.switchFlash(torch: isTorchOn)
+        delegate?.switchTorch(isOn: isTorchOn)
     }
 }
