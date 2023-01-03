@@ -16,7 +16,6 @@ protocol CameraServiceDelegate: AnyObject {
 
 final class CameraService: NSObject {
 
-    private let videoOutput = AVCaptureVideoDataOutput()
     private var captureDevice: AVCaptureDevice?
     private var backCamera: AVCaptureDevice?
     private var frontCamera: AVCaptureDevice?
@@ -30,11 +29,10 @@ final class CameraService: NSObject {
 
     private var backCameraOn = true
 
-    var takePicture = false
-
     weak var delegate: CameraServiceDelegate?
 
     var captureSession = AVCaptureSession()
+    let photoOutput = AVCapturePhotoOutput()
 
     override init() {
         super.init()
@@ -134,14 +132,14 @@ final class CameraService: NSObject {
     }
 
     private func setupOutput() {
-        guard captureSession.canAddOutput(videoOutput) else {
+        guard captureSession.canAddOutput(photoOutput) else {
             return
         }
-        videoOutput.alwaysDiscardsLateVideoFrames = true // todo
-        captureSession.addOutput(videoOutput)
-        let videoQueue = DispatchQueue(label: "videoQueue", qos: .userInteractive)
-        videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
-        videoOutput.connections.first?.videoOrientation = .portrait
+
+        photoOutput.isHighResolutionCaptureEnabled = true
+        photoOutput.maxPhotoQualityPrioritization = .balanced
+
+        captureSession.addOutput(photoOutput)
     }
 
     func switchCameraInput() { // to move
@@ -161,8 +159,8 @@ final class CameraService: NSObject {
             updateZoom(scale: startZoom)
         }
 
-        videoOutput.connections.first?.videoOrientation = .portrait
-        videoOutput.connections.first?.isVideoMirrored = !backCameraOn
+        photoOutput.connections.first?.videoOrientation = .portrait
+        photoOutput.connections.first?.isVideoMirrored = !backCameraOn
         captureSession.commitConfiguration()
     }
 
@@ -193,18 +191,23 @@ final class CameraService: NSObject {
     }
 }
 
-extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension CameraService: AVCapturePhotoCaptureDelegate {
 
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer), takePicture == true else {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        guard error == nil else {
+            print("Fail to capture photo: \(String(describing: error))")
             return
         }
-        let ciImage = CIImage(cvImageBuffer: cvBuffer)
-        let uiImage = UIImage(ciImage: ciImage)
+        guard let imageData = photo.fileDataRepresentation() else {
+            return
+        }
+        guard let image = UIImage(data: imageData) else {
+            return
+        }
 
         DispatchQueue.main.async {
-            self.delegate?.setPhoto(image: uiImage)
-            self.takePicture = false
+            self.delegate?.setPhoto(image: image)
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         }
     }
 }

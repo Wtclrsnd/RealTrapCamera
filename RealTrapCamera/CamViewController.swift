@@ -84,7 +84,10 @@ extension CamViewController: BottomBarDelegate {
     }
 
     func takePhoto() {
-        cameraService.takePicture = true
+        let photoSettings = AVCapturePhotoSettings()
+        photoSettings.isHighResolutionPhotoEnabled = true
+        cameraService.photoOutput.capturePhoto(with: photoSettings, delegate: cameraService)
+        
     }
 }
 
