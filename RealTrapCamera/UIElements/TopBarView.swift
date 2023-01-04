@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol TopBarDelegate: AnyObject {
-    
-    func switchTorch(isOn: Bool)
-}
-
 final class TopBarView: UIView {
 
     lazy var flashButton: UIButton = {
@@ -25,7 +20,7 @@ final class TopBarView: UIView {
         return button
     }()
 
-    private var isTorchOn = false {
+    var isTorchOn = false {
         didSet {
             if isTorchOn {
                 flashButton.tintColor = .lavanda
@@ -34,8 +29,6 @@ final class TopBarView: UIView {
             }
         }
     }
-
-    weak var delegate: TopBarDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -61,6 +54,5 @@ final class TopBarView: UIView {
 
     @objc private func toggleFlash() {
         isTorchOn.toggle()
-        delegate?.switchTorch(isOn: isTorchOn)
     }
 }

@@ -44,7 +44,6 @@ final class CamViewController: UIViewController {
         view.addSubview(topBar)
         view.addSubview(bottomBar)
 
-        topBar.delegate = self
         bottomBar.delegate = self
 
         bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
@@ -81,22 +80,19 @@ extension CamViewController: BottomBarDelegate {
 
     func switchCamera() {
         cameraService.switchCameraInput()
+
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
 
     func takePhoto() {
         let photoSettings = AVCapturePhotoSettings()
         photoSettings.isHighResolutionPhotoEnabled = true
+        photoSettings.flashMode = topBar.isTorchOn ? .on : .off
         cameraService.photoOutput.capturePhoto(with: photoSettings, delegate: cameraService)
-        
-    }
-}
 
-// MARK: - Top bar delegate
-
-extension CamViewController: TopBarDelegate {
-
-    func switchTorch(isOn: Bool) {
-        cameraService.toggleTorch(on: isOn)
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
     }
 }
 
