@@ -53,16 +53,26 @@ final class CameraService: NSObject {
         updateZoom(scale: newScaleFactor)
     }
 
-    func toggleTorch(on: Bool) {
-        guard let captureDevice = captureDevice else {
-            return
+    func switchCameraInput() {
+        captureSession.beginConfiguration()
+        if backCameraOn {
+            captureSession.removeInput(backInput)
+            captureSession.addInput(frontInput)
+            captureDevice = frontCamera
+            backCameraOn = false
+            delegate?.toggleIsHiddenFlashButton()
+        } else {
+            captureSession.removeInput(frontInput)
+            captureSession.addInput(backInput)
+            captureDevice = backCamera
+            backCameraOn = true
+            delegate?.toggleIsHiddenFlashButton()
+            updateZoom(scale: startZoom)
         }
 
-        if captureDevice.hasTorch {
-            tryToggleTorch(on: on)
-        } else {
-            print("Torch is not available")
-        }
+        photoOutput.connections.first?.videoOrientation = .portrait
+        photoOutput.connections.first?.isVideoMirrored = !backCameraOn
+        captureSession.commitConfiguration()
     }
 
     private func currentDevice() -> AVCaptureDevice? {
@@ -82,19 +92,19 @@ final class CameraService: NSObject {
     }
 
     private func setupAndStartCaptureSession() {
-        cameraQueue.async {
-            self.captureSession.beginConfiguration()
+        cameraQueue.async { [weak self] in
+            self?.captureSession.beginConfiguration()
 
-            if self.captureSession.canSetSessionPreset(.photo) {
-                self.captureSession.sessionPreset = .photo
+            if let canSetSessionPreset = self?.captureSession.canSetSessionPreset(.photo), canSetSessionPreset {
+                self?.captureSession.sessionPreset = .photo
             }
-            self.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true // to watch
+            self?.captureSession.automaticallyConfiguresCaptureDeviceForWideColor = true
 
-            self.setupInputs()
-            self.setupOutput()
+            self?.setupInputs()
+            self?.setupOutput()
 
-            self.captureSession.commitConfiguration()
-            self.captureSession.startRunning()
+            self?.captureSession.commitConfiguration()
+            self?.captureSession.startRunning()
         }
     }
 
@@ -142,28 +152,6 @@ final class CameraService: NSObject {
         captureSession.addOutput(photoOutput)
     }
 
-    func switchCameraInput() { // to move
-        captureSession.beginConfiguration()
-        if backCameraOn {
-            captureSession.removeInput(backInput)
-            captureSession.addInput(frontInput)
-            captureDevice = frontCamera
-            backCameraOn = false
-            delegate?.toggleIsHiddenFlashButton()
-        } else {
-            captureSession.removeInput(frontInput)
-            captureSession.addInput(backInput)
-            captureDevice = backCamera
-            backCameraOn = true
-            delegate?.toggleIsHiddenFlashButton()
-            updateZoom(scale: startZoom)
-        }
-
-        photoOutput.connections.first?.videoOrientation = .portrait
-        photoOutput.connections.first?.isVideoMirrored = !backCameraOn
-        captureSession.commitConfiguration()
-    }
-
     private func minMaxZoom(_ factor: CGFloat) -> CGFloat { min(max(factor, 1.0), zoomLimit) }
 
     private func updateZoom(scale: CGFloat) {
@@ -173,20 +161,6 @@ final class CameraService: NSObject {
             captureDevice?.videoZoomFactor = scale
         } catch {
             print(error.localizedDescription)
-        }
-    }
-
-    private func tryToggleTorch(on: Bool) {
-        do {
-            try captureDevice?.lockForConfiguration()
-
-            captureDevice?.torchMode = on
-            ? .on
-            : .off
-
-            captureDevice?.unlockForConfiguration()
-        } catch {
-            print("Torch could not be used")
         }
     }
 }
