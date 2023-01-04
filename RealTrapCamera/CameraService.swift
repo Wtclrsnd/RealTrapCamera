@@ -31,7 +31,7 @@ final class CameraService: NSObject {
 
     weak var delegate: CameraServiceDelegate?
 
-    var captureSession = AVCaptureSession()
+    let captureSession = AVCaptureSession()
     let photoOutput = AVCapturePhotoOutput()
 
     override init() {
