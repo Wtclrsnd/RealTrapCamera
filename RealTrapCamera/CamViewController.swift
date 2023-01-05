@@ -134,10 +134,6 @@ extension CamViewController {
 // MARK: - Camera service delegate
 extension CamViewController: CameraServiceDelegate {
 
-    func toggleIsHiddenFlashButton() {
-        topBar.flashButton.isHidden.toggle()
-    }
-
     func setPhoto(image: UIImage) {
         bottomBar.setUpPhoto(image: image)
     }

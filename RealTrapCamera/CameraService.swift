@@ -11,7 +11,6 @@ import AVFoundation
 protocol CameraServiceDelegate: AnyObject {
 
     func setPhoto(image: UIImage)
-    func toggleIsHiddenFlashButton()
 }
 
 final class CameraService: NSObject {
@@ -60,13 +59,11 @@ final class CameraService: NSObject {
             captureSession.addInput(frontInput)
             captureDevice = frontCamera
             backCameraOn = false
-            delegate?.toggleIsHiddenFlashButton()
         } else {
             captureSession.removeInput(frontInput)
             captureSession.addInput(backInput)
             captureDevice = backCamera
             backCameraOn = true
-            delegate?.toggleIsHiddenFlashButton()
             updateZoom(scale: startZoom)
         }
 
